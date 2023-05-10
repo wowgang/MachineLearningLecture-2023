@@ -1,0 +1,77 @@
+scikit learn 
+data 로 학습 / 학습할때 text로는 안됨 숫자만 가능
+학습train 데이터, 테스트 test 데이터 구분하여야한다
+이해하지 못하고 학습으로 정답을 외워서 맞춘것일지도 모르기 때문에
+
+target 정답
+컬럼명 feature.names
+
+target이 
+2개 단일분류
+3개이상 다중분류
+
+
+x축 data
+y축 target
+
+학습 데이터와 테스트 데이터의 비율 (분리비율) 
+test_size=0.2   # 학습 데이터: 테스트 데이터 = 4 : 1   /  120/30
+test_size주지 않으면 기본 3:1(0.25)
+
+train_test_split() 데이터셋을 학습용과 테스트용으로 나누는 기능
+X_train, X_test, y_train, y_test
+대문자 X의 의미는 다차원(2차원), 소문자 y 의 의미는 1차원
+train은 학습
+test는 테스트
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, random_state=2023
+)
+X_train.shape, X_test.shape, y_train.shape, y_test.shape
+>> ((112, 4), (38, 4), (112,), (38,)) # 분리비율  112/38
+
+
+y 값의 분포를 확인
+분포를 균일하게 맞춰준다
+stratify=iris.target        # y 값의 분포를 균일하게
+
+학습 데이터와 테스트 데이터의 비율(Test_size)을 맞춰준다
+
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, random_state=2023,
+    stratify=iris.target,
+    test_size=0.2   # 학습 데이터: 테스트 데이터 = 4 : 1   /  120/30
+)
+X_train.shape, X_test.shape, y_train.shape, y_test.shape
+>> ((120, 4), (30, 4), (120,), (30,))
+
+np.unique(y_train, return_counts=True)
+>> (array([0, 1, 2]), array([40, 40, 40], dtype=int64))
+
+# 결정 트리 모델
+from sklearn.tree import DecisionTreeClassifier
+# 모델 생성 -  객체 생성
+dtc = DecisionTreeClassifier(random_state=2023)
+# 하이퍼 파라메터
+dtc.get_params()
+
+# 학습(훈련) 실행 fit(데이터,정답)
+# X_train 데이터 / y_train 정답
+dtc.fit(X_train, y_train)
+
+# 예측을 하는 경우에는 X 값만 주고 y 값은 주지 않음
+pred = dtc.predict(X_test)
+
+평가 
+accuracy_score() 예측결과가 실제 정답과 얼마나 일치하는지 평가
+# y 실제값	y 예측값
+from sklearn.metrics import accuracy_score 
+accuracy_score(y_test, pred)
+
+# 과정을 한번에
+dtc.score(X_test, y_test)
+
+
+분류기 3가지이상
+교차검증
+모델 하이퍼 파라메터
+GridSearchCV - 교차검증,모델 파이퍼 파라메터 같이하는 함수 
