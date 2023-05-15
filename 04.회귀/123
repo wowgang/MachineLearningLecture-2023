@@ -32,6 +32,19 @@ print(iris.DESCR)
 # 기초 통계 자료
 df.describe()
 
+
+
+------------------------------------------------------------
+2.학습/테스트 데이터 셋 분리
+# 구분 해야하는 이유
+# 이해하지 못하고 학습으로 정답을 외워서 맞춘것일지도 
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, random_state=2023
+)
+------------------------------------------------------------
+3.학습
+객체 생성후 객체를 학습시키기 / # 하이퍼 파라메터
 # 표준화
 from sklearn.preprocessing import StandardScaler
 iris_std = StandardScaler().fit_transform(iris.data)
@@ -62,18 +75,6 @@ X_train, X_test, y_train, y_test = train_test_split(
 lr = LogisticRegression()
 lr.fit(X_train, y_train)
 
-
-------------------------------------------------------------
-2.학습/테스트 데이터 셋 분리
-# 구분 해야하는 이유
-# 이해하지 못하고 학습으로 정답을 외워서 맞춘것일지도 
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(
-    iris.data, iris.target, random_state=2023
-)
-------------------------------------------------------------
-3.학습
-객체 생성후 객체를 학습시키기 / # 하이퍼 파라메터
 # 결정 트리 모델
 from sklearn.tree import DecisionTreeClassifier
 dtc = DecisionTreeClassifier(random_state=2023) # 모델 생성 -  객체 생성
@@ -190,3 +191,7 @@ accuracy_score(y_test, pred)
 # 한번에
 dtc.score(X_test, y_test)
 
+분류기 3가지이상
+교차검증
+모델 하이퍼 파라메터
+GridSearchCV - 교차검증,모델 파이퍼 파라메터 같이하는 함수 
