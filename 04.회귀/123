@@ -1,0 +1,192 @@
+1.데이터 탐색 및 전처리
+----------------------------------------------------------------------
+학습할때 text는 못들어감 숫자(0,1,2)만가능 => data숫자로 바꿔줌
+from sklearn.preprocessing import LabelEncoder
+# 사이킷런의 레이블 인코더를 가져오는 명령 
+# 레이블 인코더는 범주형 데이터를 숫자형 데이터로 변환하는 데 사용
+# LabelEncoder클래스를 사용하려면 객채를 생성해야함
+# 객체 생성
+le = LabelEncoder()
+# 인코딩 실행, 즉 변환 작업
+labels = le.fit_transform(items)
+# 고수들은
+labels = LabelEncoder().fit_transform(items)
+
+# 데이터X/ 정답y 정해주기
+data 
+target (# 일반적인경우 0, 확인하려는 경우 1 로하는게 통상적)
+
+
+결측치 확인
+df.isna().sum().sum()
+# 중복제거 
+
+# target 값의 분포확인
+ex) df.species.value_counts()
+
+target값 2개 단일 분류
+target값 3개이상 다중 분류
+
+# 데이터셋에 대한 설명
+print(iris.DESCR)
+# 기초 통계 자료
+df.describe()
+
+# 표준화
+from sklearn.preprocessing import StandardScaler
+iris_std = StandardScaler().fit_transform(iris.data)
+
+로지스틱 회귀(Logistic Regresiion)
+from sklearn.linear_model import LogisticRegression 
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, stratify=iris.target, test_size=0.2, random_state=2023
+)
+lr = LogisticRegression()
+lr.fit(X_train, y_train)
+======================================
+# 표준화 의 효과  iris.data => iris_std
+X_train, X_test, y_train, y_test = train_test_split(
+    iris_std, iris.target, stratify=iris.target, test_size=0.2, random_state=2023
+)
+lr = LogisticRegression()
+lr.fit(X_train, y_train)
+lr.score(X_test, y_test)
+
+# 정규화 최소값0,최대값1
+from sklearn.preprocessing import MinMaxScaler 
+iris_mm = MinMaxScaler().fit_transform(iris.data)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    iris_mm, iris.target, stratify=iris.target, test_size=0.2, random_state=2023
+)
+lr = LogisticRegression()
+lr.fit(X_train, y_train)
+
+
+------------------------------------------------------------
+2.학습/테스트 데이터 셋 분리
+# 구분 해야하는 이유
+# 이해하지 못하고 학습으로 정답을 외워서 맞춘것일지도 
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, random_state=2023
+)
+------------------------------------------------------------
+3.학습
+객체 생성후 객체를 학습시키기 / # 하이퍼 파라메터
+# 결정 트리 모델
+from sklearn.tree import DecisionTreeClassifier
+dtc = DecisionTreeClassifier(random_state=2023) # 모델 생성 -  객체 생성
+dtc.fit(X_train, y_train) # 학습(훈련) 실행 # X_train 데이터 / y_train 정답
+
+# GridSearchCV 교차 검증 / 가장 좋은 성능을 보이는 하이퍼파라미터 조합을 선택
+params 조합 만들어주기
+params = {
+    'max_depth': [2, 5, 8],
+    'min_samples_split': [2, 3, 4]
+}
+from sklearn.model_selection import GridSearchCV
+
+grid_dt = GridSearchCV(
+    dtc,        # estimator, Decision Tree Classifier
+    param_grid=params,  # parameter를 조합한것 / 파라메터의 조함 / 
+    scoring='accuracy', # 평가 방법- 정확도
+    cv=5    # 교차검증 세트 수 
+)
+# 총 3(max_depth) X 3(min_samples_split) X 5(cv) = 45회 학습
+
+# 학습
+grid_dt.fit(X_train, y_train)
+# 베스트 파라메터 조합
+grid_dt.best_params_
+# 베스트 스코어
+grid_dt.best_score_
+# 최적 분류기
+best_dt = grid_dt.best_estimator_
+
+# Random Forest로 학습
+from sklearn.ensemble import RandomForestClassifier
+rfc = RandomForestClassifier(random_state=2023) # 'n_estimators': 100개를사용? / 중복을 허용한 무작위로100개를 추출?ㅋㅋㅋㅋ
+rfc.get_params()
+rfc.fit(X_train, y_train)
+rfc.score(X_test, y_test)
+
+# SVM(Support Vector Machine) 하이퍼 파라메터
+from sklearn.svm import SVC 
+svc = SVC(random_state=2023)
+svc.get_params()
+
+from sklearn.model_selection import GridSearchCV 
+grid_svc = GridSearchCV(
+    svc, params, scoring='accuracy', cv=5
+)
+grid_svc.fit(X_train, y_train)
+# _ 변수 모델이 학습후 우리에게 제공하는
+grid_svc.best_params_
+best_svc = grid_svc.best_estimator_
+best_svc.score(X_test, y_test)
+# predict_proba() method를 사용하려면 하이퍼파라메터 probability를 True로 지정해야 함
+svc = SVC(probability=True, random_state=2023)
+
+# K-Nearset Neighbor  /훈련이 별도로 필요하지 않고, 훈련 데이터 저장이 전부
+from sklearn.neighbors import KNeighborsClassifier
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, stratify=iris.target, test_size=0.2, random_state=2023
+)
+knn = KNeighborsClassifier()
+knn.fit(X_train, y_train)
+knn.score(X_test, y_test)
+
+# 로지스틱 회귀를 사용하려면 데이터를 표준화/정규화 해야함
+from sklearn.preprocessing import StandardScaler 
+X_std = StandardScaler().fit_transform(X)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_std, y, stratify=y, test_size=0.2, random_state=2023
+)
+from sklearn.linear_model import LogisticRegression 
+lrc = LogisticRegression(random_state=2023)
+lrc.fit(X_train,y_train)
+lrc.score(X_test, y_test)
+
+# 선형회귀의 가중치(계수)
+# coefficient 계수
+lrc.coef_
+# 선형회귀의 바이어스(절편) imtercept
+lrc.intercept_
+# X_test[0]가 1이 될 확률, sigmoid 함수 적용 전 값
+val = np.dot(lrc.coef_, X_test[0]) + lrc.intercept_
+val[0]
+
+# sigmoid 함수 적용 
+# 1이 될 확률 0
+sigmoid(val) # 0.0046 이면 0으로보는데 / 이진분류0.5이상이면1,미만이면0
+# y=sigmoid(W*X+b)
+# W = 가중치 선형회귀의 가중치(계수lrc.coef_)
+# X = feature / 정규화 또는 표준화
+# b = 선형회귀의 바이어스(절편) imtercept
+
+# 하드 보팅을 위한 앙상블 분류기
+from sklearn.ensemble import VotingClassifier
+voc = VotingClassifier(
+    estimators=[('LRC', lrc), ('SVC', svc), ('KNN', knn)],
+    voting='hard'
+)
+voc.fit(X_train, y_train)
+voc.score(X_test, y_test)
+
+-------------------------------------------------------------------
+4. 예측
+# 예측을 하는 경우에는 X 값만 주고 y 값은 주지 않음
+pred = dtc.predict(X_test)
+
+--------------------------------------------------------------------
+5.평가
+# 학습한 data로 score확인하면 100프로 니까 test data로
+# y 실제값	y 예측값
+from sklearn.metrics import accuracy_score 
+accuracy_score(y_test, pred)
+
+# 한번에
+dtc.score(X_test, y_test)
+

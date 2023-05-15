@@ -1,0 +1,3 @@
+predict
+predict_proba 우리가 사용할거
+predict_log_proba 스케일 줄인것
