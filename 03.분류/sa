@@ -2,11 +2,15 @@
 data
 target 
 
+
+2.학습/테스트 데이터 셋 분리
 회귀/분류
 
 # Logistic Regresiion 로지스틱회귀는 표준화/정규화
-
-2.학습/테스트 데이터 셋 분리
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, stratify=y, test_size=0.2, random_state=2023
+)
 
 3.학습
 
@@ -17,3 +21,7 @@ target
 # RandomForestClassifier
 # SVM(Support Vector Machine)
 # K-Nearset Neighbor  
+
+4. 예측
+
+5.평가
