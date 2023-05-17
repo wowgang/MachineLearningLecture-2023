@@ -1,0 +1,13 @@
+차원축소 pca
+principal 
+component
+analysis
+
+회귀선(사선)이 주성분
+
+공분산행렬
+iris 표준화한다음
+iris 150,4
+irisT (4,150)
+공분산 irisT (4,150)(150,4)
+4,4
