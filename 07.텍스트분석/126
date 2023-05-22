@@ -1,13 +1,45 @@
-데이터 전처리
+[데이터 전처리]
 - dataframe에서 selection 하기 
-- 결측치확인
-- 중복 데이터 제거
+- 데이터 분포 확인하기 긍정/부정
 - 0과 1 로 만들어주기 0부정1긍정
 - 0,1의 분포확인
+- 결측치확인 , 
+- 중복 데이터 확인 후 제거
+    print(df.shape)
+    print(df.review.nunique())
+    
+    df.drop_duplicates(subset=['review'], inplace=True)
+    df.shape
 
-텍스트 전처리
+[텍스트 전처리]
 - 구둣점,숫자 제거
+- 한글 이외의 데이터는 제거 (정규표현식)
+    df.review = df.review.str.replace('[^ㄱ-ㅎㅏ-ㅣ가-힣]', ' ', regex=True).str.strip()
+    df.review = df.review.str.replace('[^ㄱ-ㅎㅏ-ㅣ가-힣 ]', '', regex=True)
+# 한글 이외의 데이터를 제거함으로써 발생하는 ''를 제거
+df.review.replace('', np.nan, inplace=True)
+df.isna().sum()
 
-train,test 나눠서 하기 전처리,학습.,;;,.,.,.
-데이터셋 분리
+-한글 형태소 분석 및 불용어 제거 (토큰화)
+with open('data/불용어.txt') as st:
+    lines = st.readlines()
+stop_words = [line.split('\t')[0] for line in lines]
 
+from konlpy.tag import Okt
+okt = Okt()
+
+
+reviews = []
+for review in df.review:
+    morphs = okt.morphs(review, stem=True)
+    tmp = [word for word in morphs if word not in stop_words]
+    reviews.append(' '.join(tmp))
+
+
+
+[데이터셋 분리]
+- train,test 나눠서 하기 전처리,학습.,;;,.,.,.
+
+학습fit시켜보고 X_train, y_train
+예측predit해보고 
+score확인   X_test, y_test
