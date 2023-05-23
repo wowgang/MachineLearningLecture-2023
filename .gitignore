@@ -2,6 +2,8 @@
 test.py
 test.ipynb
 model/
+# 용량이 너무 커서
+credits.csv
 
 # gitignore template for Jupyter Notebooks
 # website: http://jupyter.org/
