@@ -2,6 +2,7 @@
 test.py
 test.ipynb
 model/
+melon_cosine_sim.sim
 # 용량이 너무 커서
 credits.csv
 
